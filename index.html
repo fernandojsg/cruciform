@@ -398,21 +398,52 @@ void main()  {
 
 	function selectQuality() {
 
-		var links = document.querySelectorAll( 'div ul li' );
-		[].forEach.call( links, function( li ) {
-			var url = li.getAttribute( 'data-url' );
-			li.addEventListener( 'click', function( e ) {
-				var hashFields = url.split( '&' );
-				hashFields.forEach( function( e ) {
-					var f = e.split( '=' );
-					var obj = {}
-					hashOptions[ f [ 0 ] ] = f[ 1 ] == 'true'?true:false;
+		var configs = {
+			verylow: {
+				dof: false,
+				post: false
+			},
+			low: {
+				dof: false,
+				post: true,
+				scale: true
+			},
+			normal: {
+				dof: true,
+				post: true,
+				scale: true
+			},
+			high: {
+				dof: true,
+				post: true,
+				scale: false
+			}
+		};
+
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has('play')) {
+			hashOptions = configs[urlParams.get('quality')];
+			document.getElementById( 'selection' ).classList.add( 'hidden' );
+			init();
+		} else {
+
+			var links = document.querySelectorAll( 'div ul li' );
+			[].forEach.call( links, function( li ) {
+				var url = li.getAttribute( 'data-url' );
+				li.addEventListener( 'click', function( e ) {
+					var hashFields = url.split( '&' );
+					hashFields.forEach( function( e ) {
+						var f = e.split( '=' );
+						var obj = {}
+						hashOptions[ f [ 0 ] ] = f[ 1 ] == 'true'?true:false;
+					} );
+					document.getElementById( 'selection' ).classList.add( 'hidden' );
+					init();
+					e.preventDefault();
 				} );
-				document.getElementById( 'selection' ).classList.add( 'hidden' );
-				init();
-				e.preventDefault();
 			} );
-		} );
+
+		}
 
 	}
 
